@@ -1,0 +1,68 @@
+### Teste de saúde da API
+GET http://localhost:5000/api/health
+
+### Registro de cliente
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Maria Santos",
+  "email": "maria@email.com",
+  "password": "senha123",
+  "userType": "client",
+  "phone": "912345678",
+  "address": {
+    "street": "Rua das Flores, 123",
+    "city": "Lisboa",
+    "state": "Lisboa",
+    "zipCode": "1000-001"
+  }
+}
+
+### Registro de cuidador
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ana Silva",
+  "email": "ana@email.com",
+  "password": "senha123",
+  "userType": "caregiver",
+  "phone": "919876543",
+  "experience": "5 anos de experiência com idosos e pessoas com mobilidade reduzida",
+  "specialties": ["idosos", "mobilidade reduzida", "alzheimer"],
+  "certifications": ["Curso de Cuidador de Idosos", "Primeiros Socorros"],
+  "hourlyRate": 12.50,
+  "bio": "Cuidadora dedicada com experiência em cuidados domiciliários"
+}
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@email.com",
+  "password": "senha123"
+}
+
+### Verificar token (substitua TOKEN_AQUI pelo token recebido no login)
+GET http://localhost:5000/api/auth/verify
+Authorization: Bearer TOKEN_AQUI
+
+### Obter perfil (substitua TOKEN_AQUI pelo token recebido no login)
+GET http://localhost:5000/api/users/profile
+Authorization: Bearer TOKEN_AQUI
+
+### Listar profissionais
+GET http://localhost:5000/api/users/professionals
+Authorization: Bearer TOKEN_AQUI
+
+### Atualizar perfil
+PUT http://localhost:5000/api/users/profile
+Authorization: Bearer TOKEN_AQUI
+Content-Type: application/json
+
+{
+  "name": "Maria Santos Silva",
+  "phone": "913456789"
+}

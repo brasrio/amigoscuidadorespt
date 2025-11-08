@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Amigos Cuidadores</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Header/Navbar -->
@@ -61,7 +61,7 @@
             </div>
 
             <form class="cadastro-form" action="#" method="POST">
-                <input type="hidden" name="userType" id="userType" value="cliente">
+                <input type="hidden" name="userType" id="userType" value="client">
 
                 <div class="form-group">
                     <label for="nome">Nome Completo *</label>
@@ -75,31 +75,13 @@
 
                 <div class="form-group">
                     <label for="telefone">Telefone *</label>
-                    <input type="tel" id="telefone" name="telefone" required placeholder="+351912345678" pattern="\+351[0-9]{9}">
+                    <input type="tel" id="telefone" name="telefone" required placeholder="+351912345678">
                 </div>
 
                 <div class="form-group">
                     <label for="distrito">Distrito *</label>
                     <select id="distrito" name="distrito" required>
-                        <option value="">Selecione o distrito</option>
-                        <option value="Aveiro">Aveiro</option>
-                        <option value="Beja">Beja</option>
-                        <option value="Braga">Braga</option>
-                        <option value="Bragança">Bragança</option>
-                        <option value="Castelo Branco">Castelo Branco</option>
-                        <option value="Coimbra">Coimbra</option>
-                        <option value="Évora">Évora</option>
-                        <option value="Faro">Faro</option>
-                        <option value="Guarda">Guarda</option>
-                        <option value="Leiria">Leiria</option>
-                        <option value="Lisboa">Lisboa</option>
-                        <option value="Portalegre">Portalegre</option>
-                        <option value="Porto">Porto</option>
-                        <option value="Santarém">Santarém</option>
-                        <option value="Setúbal">Setúbal</option>
-                        <option value="Viana do Castelo">Viana do Castelo</option>
-                        <option value="Vila Real">Vila Real</option>
-                        <option value="Viseu">Viseu</option>
+                        <option value="">Carregando distritos...</option>
                     </select>
                 </div>
 
@@ -149,5 +131,9 @@
             </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/cadastro.js"></script>
 </body>
 </html>

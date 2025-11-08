@@ -1,0 +1,27 @@
+{
+  "name": "amigoscuidadorespt",
+  "version": "1.0.0",
+  "description": "website",
+  "main": "server-frontend.js",
+  "scripts": {
+    "start": "node servidor.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brasrio/amigoscuidadorespt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/brasrio/amigoscuidadorespt/issues"
+  },
+  "homepage": "https://github.com/brasrio/amigoscuidadorespt#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
