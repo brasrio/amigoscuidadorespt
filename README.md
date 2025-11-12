@@ -11,6 +11,7 @@ O projecto inclui landing page pública, fluxo de cadastro, autenticação com J
 - [Arquitectura e tecnologias](#arquitectura-e-tecnologias)
 - [Preparação do ambiente](#preparação-do-ambiente)
 - [Como executar](#como-executar)
+- [Deploy em Produção (Vercel)](#-deploy-em-produção-vercel)
 - [Utilização por perfil](#utilização-por-perfil)
 - [Estrutura de directórios](#estrutura-de-directórios)
 - [API – visão geral](#api--visão-geral)
@@ -38,14 +39,16 @@ O projecto inclui landing page pública, fluxo de cadastro, autenticação com J
 
 - **Frontend**: HTML5, CSS3 (layout responsivo), JavaScript vanilla (SPA leve baseada em modais e trocas de secções).
 - **Backend**: Node.js (Express 5), validação com `express-validator`, autenticação com JWT (`jsonwebtoken`) e `bcryptjs` desactivado para ambiente demo.
-- **Persistência**: Ficheiro JSON local (`backend/data/users.json`) com estrutura completa de utilizadores e perfis profissionais.
+- **Persistência**: Firebase Firestore (produção e desenvolvimento) com estrutura completa de utilizadores e perfis profissionais.
+- **Email**: Nodemailer com SMTP do Gmail para recuperação de senha.
+- **Deploy**: Vercel (serverless) com detecção automática de ambiente.
 - **Outras bibliotecas**:
   - `cors`, `dotenv` para configuração de ambiente e CORS.
+  - `firebase-admin` para integração com Firebase.
   - `uuid` para geração de identificadores únicos.
   - `nodemon` para desenvolvimento.
-  - Servidor estático simples (Python `http.server`) para frontend.
 
-> ⚠️ O armazenamento de senhas em texto plano e o servidor de ficheiros estático foram mantidos para fins de demonstração local. Em produção, recomenda-se encriptação de senhas e alojamento moderno (ex.: Vite/React + CDN).
+> ⚠️ O armazenamento de senhas em texto plano foi mantido para fins de demonstração. Em produção real, recomenda-se fortemente a implementação de hash com bcrypt e outras melhorias de segurança (veja [`DEPLOY_VERCEL.md`](DEPLOY_VERCEL.md)).
 
 ---
 
@@ -113,6 +116,61 @@ Segue-se aceder, no navegador, às rotas:
 
 ---
 
+## 🚀 Deploy em Produção (Vercel)
+
+O projeto está **totalmente preparado** para deploy no Vercel com modo serverless!
+
+### 📖 Guias Disponíveis
+
+Criamos documentação completa para deploy:
+
+1. **🎯 Início Rápido:** [`LEIA-ME-PRIMEIRO.md`](LEIA-ME-PRIMEIRO.md) - Índice de toda documentação
+2. **⚡ Deploy Rápido:** [`GUIA_RAPIDO.md`](GUIA_RAPIDO.md) - 5 passos essenciais (5 min)
+3. **📖 Guia Completo:** [`DEPLOY_VERCEL.md`](DEPLOY_VERCEL.md) - Passo a passo detalhado (15-20 min)
+4. **📋 Variáveis:** [`VARIAVEIS_VERCEL.txt`](VARIAVEIS_VERCEL.txt) - Variáveis para copiar/colar
+5. **📝 Mudanças:** [`RESUMO_MUDANCAS.md`](RESUMO_MUDANCAS.md) - O que foi alterado no código
+
+### ⚡ Deploy em 5 Passos
+
+```bash
+# 1. Commit e Push
+git add .
+git commit -m "Deploy Vercel"
+git push origin main
+
+# 2. Acesse https://vercel.com e importe o repositório
+
+# 3. Configure as 11 variáveis de ambiente (veja VARIAVEIS_VERCEL.txt)
+
+# 4. Clique em "Deploy"
+
+# 5. Teste: https://sua-url.vercel.app/api/health
+```
+
+### 🔄 Desenvolvimento Local Continua Funcionando!
+
+O código detecta automaticamente o ambiente:
+
+- **Local:** `npm run dev` funciona como antes
+- **Vercel:** Deploy automático a cada `git push`
+
+### 🔒 Importante - Segurança
+
+⚠️ **Para produção real:**
+- Implementar hash de senhas (bcrypt)
+- Gerar JWT_SECRET mais seguro
+- Trocar credenciais SMTP após deploy
+
+Veja detalhes em: [`DEPLOY_VERCEL.md`](DEPLOY_VERCEL.md) → Seção "Segurança"
+
+### 📊 Banco de Dados
+
+- ✅ **Produção:** Firebase Firestore (configurado)
+- ✅ **Local:** Firebase Firestore (mesmo banco)
+- ❌ **JSON Local:** Removido (`backend/data/users.json`)
+
+---
+
 ## 👤 Utilização por perfil
 
 | Perfil | Credenciais (demo) | Funcionalidades |
@@ -135,12 +193,12 @@ Segue-se aceder, no navegador, às rotas:
 ```
 amigoscuidadorespt/
 ├── backend/
-│   ├── config/            # Configurações (JWT, porta, etc.)
+│   ├── config/            # Configurações (JWT, Firebase, porta)
 │   ├── controllers/       # Controladores Express
-│   ├── data/              # Base de dados local (users.json)
 │   ├── middlewares/       # Autenticação, validação
-│   ├── models/            # Modelos de dados (User)
+│   ├── models/            # Modelos de dados (User, Transaction, PasswordReset)
 │   ├── routes/            # Rotas da API
+│   ├── services/          # Serviços (Email)
 │   ├── server.js          # Ponto de entrada do backend
 │   └── package.json
 ├── assets/                # Imagens, JSON de distritos/municípios
@@ -150,7 +208,12 @@ amigoscuidadorespt/
 ├── cadastro.html          # Página de cadastro
 ├── login.html             # Página de login
 ├── dashboard.html         # Dashboard autenticado
-└── README.md
+├── vercel.json            # Configuração Vercel
+├── .vercelignore          # Arquivos ignorados no deploy
+├── LEIA-ME-PRIMEIRO.md    # Índice da documentação de deploy
+├── GUIA_RAPIDO.md         # Deploy rápido (5 passos)
+├── DEPLOY_VERCEL.md       # Guia completo de deploy
+└── README.md              # Este arquivo
 ```
 
 ---

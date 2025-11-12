@@ -67,8 +67,14 @@ app.use((req, res) => {
   });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
-});
+// Iniciar servidor apenas em desenvolvimento local
+// No Vercel, a exportação do app é suficiente
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
+
+// Exportar app para Vercel (serverless)
+module.exports = app;

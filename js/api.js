@@ -1,5 +1,8 @@
 // Configuração da API
-const API_URL = 'http://localhost:5000/api';
+// Detecta automaticamente o ambiente (local ou produção)
+const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5000/api'
+    : '/api';
 
 // Classe para gerenciar chamadas à API
 class AmigosAPI {
@@ -190,7 +193,7 @@ class AmigosAPI {
     // Atualizar usuário como admin
     async adminUpdateUser(userId, updateData) {
         try {
-            const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+            const response = await fetch(`${API_URL}/users/${userId}`, {
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(updateData)
@@ -211,7 +214,7 @@ class AmigosAPI {
     // Excluir usuário como admin
     async adminDeleteUser(userId) {
         try {
-            const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+            const response = await fetch(`${API_URL}/users/${userId}`, {
                 method: 'DELETE',
                 headers: this.getHeaders()
             });

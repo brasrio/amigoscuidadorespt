@@ -1,0 +1,78 @@
+================================================================================
+VARIÁVEIS DE AMBIENTE PARA VERCEL - COPIAR E COLAR
+================================================================================
+
+Instruções: No Vercel, vá em Settings → Environment Variables
+Para cada variável abaixo, clique em "Add" e cole Nome e Valor
+Selecione TODOS os ambientes (Production, Preview, Development)
+
+================================================================================
+
+Nome: NODE_ENV
+Valor: production
+
+---
+
+Nome: PORT
+Valor: 5000
+
+---
+
+Nome: JWT_SECRET
+Valor: amigos_cuidadores_secret_key_2025
+
+---
+
+Nome: JWT_EXPIRE
+Valor: 7d
+
+---
+
+Nome: SMTP_HOST
+Valor: smtp.gmail.com
+
+---
+
+Nome: SMTP_PORT
+Valor: 587
+
+---
+
+Nome: SMTP_USER
+Valor: amigoscuidadorespt@gmail.com
+
+---
+
+Nome: SMTP_PASS
+Valor: sylunwdeulydjjiv
+
+---
+
+Nome: SMTP_SECURE
+Valor: false
+
+---
+
+Nome: EMAIL_FROM
+Valor: Amigos Cuidadores <amigoscuidadorespt@gmail.com>
+
+---
+
+Nome: FIREBASE_SERVICE_ACCOUNT_JSON
+Valor: {"type":"service_account","project_id":"amigos-cuidadores-pt","private_key_id":"9658cc18c357ba7cf54441bf08def62ddc70baf9","private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCeu7SoEes53sAl\nkogFZE2/d8fYcBKVINL2E2y/eziLurVjWS+04h3tFLrgCgxwdLqAkIP9nnil+4tr\nnqSAJ/swtVwsYByLqPRVaLQsbKgxZBm5BdO3QBHxPZweJWrDEysawMkWOaPOWmIf\nrcErX1SCzqSX12OB5z+zjiKxitc6v08f1Eu8+GU1O+fAzZx65dHdwyAQGdjuNkn7\nahMThJPhhXRzsMMjGyG3nna7j5QE2tQFQF74y+ivqNCdGvOb4FvpN98AGRrwjnJD\nUBSpmsuGj5ar1+igsy/zqHqMASHHTBE0XXEQRHtm8QwHNhSNj9mzRNUn6Ip0KQfO\nrUk3Xk9VAgMBAAECggEAFKgHp/GBA2xl493QPqdhaL+9LYDUIjz9xxEbD0YJQ0G+\nVhnml+rvCwmuEfaszLucA5wK2SfUuoDkEVK5RIYvbZTEVHADdvc7KJwyCi/vqVHF\n+Sp1dTzsuNCULuYeoRku/FHHOVGx6+oeJ9I0N6E1vboHeE0KwX5m70ZZZHJVdOr4\nziV1ewWRuFyRg8xt06iSSooHeVDAOi6MZZeygwjI504pp2q20RRH5YtmpSdbiKtC\nngu9XRvHSZvheSEuI0VwC1VjMJh0fbRxhwgyWl8WDNcHmKWLgOyNQNk+7O+FwT7A\nu+cGUb7ty66S10M5PRoVI+Ks8GYN/VdQCP3yClPwBwKBgQDaZOebaO6qVN+yS4Cx\ns/4xTky/Dr/C7p06Gr7sH/rMpsQIw5vA18bJvBSBOi64w85OWf+bqz1/NqaCbHHz\nzEU8D7Na3QQaAnTbAp5Rc+Vs5YIlzUmXOn5dNTpdlv3unxsQWPWOtmVIFzt2xO+B\ne335aeQGZG+iGyqWo9fFa1bSBwKBgQC6EN7NVxz+XyiJy4LPEZM8Y+2bJyL1W2Gx\nfCOIPpY43wWHy93kBz97iv8I3V2IsQiU0X+57VzP4Qr6VleGbHUg4Ist4jnYzrvy\nIUKF4g2MBFyB8Zj0WPPBjA/Gxdejsp1V2HTUcfAkz1DFL5ppdQ5m4kKhfuYNgwYO\nGiFSYXwMwwKBgHF4ignqTE79yDh4GEa8UW9G0oNWY3Yhylk9OkOvHf0lDKfNEmjw\n890vNqwqEcp4GgIFqtQz9cDaIUuUkuRsFvDs63Bjc1UcP6DnTGDfya151dRURE8p\n2iwNkuS7pfZMfqBQyE09IYSCZagBDLwG8N4dEZfsqT/dw5P/TwXJDpQTAoGAWUc7\nAOApw0w5kVSbIWxXb4SrP+UZew0r5ROhoQAW6JbqemwxvfZUWZ0qHkDJXotDiNS1\nKqtf+0cKE3BWcuObl/jmD1AbXZJk0BtxZfg/c82r7ZXVRHliDJ59+2x2uc88ezJv\nbHh3N9JZ+SOMPcmy7V7nhcHz9MvHngCfuH2aHi0CgYAxh628nww2hK9W3wtJ5mqr\naNHgBdhGbxdSG3KH2KnwUeY5qFYbvLkKUoWQHpd+PgYvcnUC72xMfB7pis+z9QxN\n26WAnwz+PZe57viEd4xPwcCRiD5FN053TeA24nXt7fPPzTrV4yESgb8+47lkyW4F\nbnZfCZkBhRq8YlV+0RYwcQ==\n-----END PRIVATE KEY-----\n","client_email":"firebase-adminsdk-fbsvc@amigos-cuidadores-pt.iam.gserviceaccount.com","client_id":"106254969911725802435","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40amigos-cuidadores-pt.iam.gserviceaccount.com","universe_domain":"googleapis.com"}
+
+================================================================================
+
+TOTAL: 11 variáveis
+
+⚠️ IMPORTANTE: Selecione TODOS os ambientes para cada variável!
+   ☑ Production
+   ☑ Preview  
+   ☑ Development
+
+================================================================================
+
+LEIA O ARQUIVO DEPLOY_VERCEL.md PARA INSTRUÇÕES COMPLETAS!
+
+================================================================================
+
