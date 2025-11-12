@@ -4,7 +4,9 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 // Carregar variáveis de ambiente
+// No Vercel, as variáveis já vêm do ambiente, então o dotenv pode falhar silenciosamente
 dotenv.config({ path: './config.env' });
+dotenv.config({ path: path.join(__dirname, 'config.env') });
 
 // Inicializar Firebase
 require('./config/firebase');
