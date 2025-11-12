@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Erro ao registrar:', error);
             showError('Erro de conexão. Tente novamente.');
             setFormLoading(false);
-        }
+    }
     });
 
     // Função para mostrar erro

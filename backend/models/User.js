@@ -1,79 +1,107 @@
-const fs = require('fs').promises;
-const path = require('path');
-const bcrypt = require('bcryptjs');
+const { firestore } = require('../config/firebase');
 const { v4: uuidv4 } = require('uuid');
 
 class User {
   constructor() {
-    this.dataPath = path.join(__dirname, '../data/users.json');
-    this.initializeDataFile();
+    this.collection = firestore.collection('users');
   }
 
-  // Inicializar arquivo de dados se não existir
-  async initializeDataFile() {
-    try {
-      await fs.access(this.dataPath);
-    } catch (error) {
-      // Criar diretório data se não existir
-      const dataDir = path.dirname(this.dataPath);
-      await fs.mkdir(dataDir, { recursive: true });
-      
-      // Criar arquivo users.json vazio
-      await fs.writeFile(this.dataPath, JSON.stringify([], null, 2));
+  formatUser(doc, { includePassword = false } = {}) {
+    if (!doc || !doc.exists) {
+      return null;
     }
-  }
 
-  // Ler todos os usuários
-  async readUsers() {
-    try {
-      const data = await fs.readFile(this.dataPath, 'utf8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Erro ao ler usuários:', error);
-      return [];
+    const data = doc.data();
+    const user = {
+      id: doc.id,
+      ...data
+    };
+
+    if (!includePassword) {
+      delete user.password;
     }
+
+    return user;
   }
 
-  // Salvar usuários
-  async saveUsers(users) {
-    try {
-      await fs.writeFile(this.dataPath, JSON.stringify(users, null, 2));
-    } catch (error) {
-      console.error('Erro ao salvar usuários:', error);
-      throw error;
+  prepareAvatar(avatar) {
+    if (!avatar) {
+      return null;
     }
+
+    if (typeof avatar !== 'string' || !avatar.startsWith('data:image/')) {
+      throw new Error('Formato de imagem inválido');
+    }
+
+    const MAX_AVATAR_BYTES = 700 * 1024; // ~700KB
+    const base64Data = avatar.split(',')[1] || '';
+    const bufferLength = Buffer.from(base64Data, 'base64').length;
+
+    if (bufferLength > MAX_AVATAR_BYTES) {
+      throw new Error('Imagem muito grande. Utilize arquivos de até 700KB.');
+    }
+
+    return avatar;
   }
 
-  // Criar novo usuário
+  async findByEmail(email) {
+    const snapshot = await this.collection.where('email', '==', email).limit(1).get();
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    return this.formatUser(snapshot.docs[0], { includePassword: true });
+  }
+
+  async findById(id) {
+    const doc = await this.collection.doc(id).get();
+    return this.formatUser(doc, { includePassword: true });
+  }
+
   async create(userData) {
-    const users = await this.readUsers();
-    
-    // Verificar se email já existe
-    const emailExists = users.some(user => user.email === userData.email);
-    if (emailExists) {
+    const existingUser = await this.findByEmail(userData.email);
+    if (existingUser) {
       throw new Error('Email já cadastrado');
     }
 
-    // Salvar senha em texto plano (APENAS PARA DESENVOLVIMENTO - NÃO SEGURO!)
-    // const hashedPassword = await bcrypt.hash(userData.password, 10);
+    // Usar apenas o nome para gerar o ID, não o email (para preservar pontos no email)
+    const baseId = userData.name || uuidv4();
+    const id = String(baseId)
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || uuidv4();
+    const now = new Date().toISOString();
 
-    // Criar novo usuário
     const newUser = {
-      id: uuidv4(),
+      id,
       name: userData.name,
       email: userData.email,
-      password: userData.password, // Senha em texto plano
-      userType: userData.userType || 'client', // client, caregiver, nurse
+      password: userData.password, // Mantém texto plano (apenas para desenvolvimento)
+      userType: userData.userType || 'client',
       phone: userData.phone || '',
       address: userData.address || {},
-      avatar: userData.avatar || null,
-      profileComplete: false,
-      verified: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      avatar: this.prepareAvatar(userData.avatar),
+      profileComplete: Boolean(userData.profileComplete) || false,
+      verified: Boolean(userData.verified) || false,
+      createdAt: now,
+      updatedAt: now,
+      // Carteira para integração futura com Stripe
+      wallet: {
+        balance: 0, // Saldo disponível em EUR
+        pendingBalance: 0, // Saldo pendente (pagamentos em processamento)
+        totalEarnings: 0, // Total ganho (apenas cuidadores)
+        totalSpent: 0, // Total gasto (apenas clientes)
+        currency: 'EUR',
+        stripeCustomerId: null, // ID do cliente no Stripe
+        stripeAccountId: null, // ID da conta conectada Stripe (para cuidadores)
+        paymentMethods: [], // Métodos de pagamento salvos
+        lastUpdated: now
+      }
     };
 
-    // Adicionar campos específicos por tipo de usuário
     if (userData.userType === 'caregiver' || userData.userType === 'nurse') {
       newUser.professional = {
         experience: userData.experience || '',
@@ -85,91 +113,83 @@ class User {
         rating: 0,
         totalReviews: 0
       };
+    } else if (userData.userType === 'client') {
+      newUser.careRecipient = {
+        age: null,
+        weight: null,
+        limitations: '',
+        maxHourlyRate: null,
+        bio: ''
+      };
     }
 
-    users.push(newUser);
-    await this.saveUsers(users);
+    await this.collection.doc(id).set(newUser);
 
-    // Retornar usuário sem a senha
     const { password, ...userWithoutPassword } = newUser;
     return userWithoutPassword;
   }
 
-  // Buscar usuário por email
-  async findByEmail(email) {
-    const users = await this.readUsers();
-    return users.find(user => user.email === email);
-  }
-
-  // Buscar usuário por ID
-  async findById(id) {
-    const users = await this.readUsers();
-    return users.find(user => user.id === id);
-  }
-
-  // Atualizar usuário
   async update(id, updateData) {
-    const users = await this.readUsers();
-    const userIndex = users.findIndex(user => user.id === id);
+    const docRef = this.collection.doc(id);
+    const currentSnapshot = await docRef.get();
 
-    if (userIndex === -1) {
+    if (!currentSnapshot.exists) {
       throw new Error('Usuário não encontrado');
     }
 
-    // Se estiver atualizando a senha, manter em texto plano (NÃO SEGURO!)
-    // if (updateData.password) {
-    //   updateData.password = await bcrypt.hash(updateData.password, 10);
-    // }
-
-    // Atualizar usuário
-    users[userIndex] = {
-      ...users[userIndex],
+    const dataToUpdate = {
       ...updateData,
       updatedAt: new Date().toISOString()
     };
 
-    await this.saveUsers(users);
+    if (Object.prototype.hasOwnProperty.call(updateData, 'avatar')) {
+      dataToUpdate.avatar = this.prepareAvatar(updateData.avatar);
+    }
 
-    // Retornar usuário atualizado sem a senha
-    const { password, ...userWithoutPassword } = users[userIndex];
+    // Senha em texto puro (sem hash)
+    // A senha será atualizada diretamente no banco de dados se for fornecida
+
+    await docRef.set(dataToUpdate, { merge: true });
+
+    const updatedDoc = await docRef.get();
+    const updatedUser = this.formatUser(updatedDoc, { includePassword: true });
+
+    const { password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
   }
 
-  // Deletar usuário
   async delete(id) {
-    const users = await this.readUsers();
-    const filteredUsers = users.filter(user => user.id !== id);
+    const docRef = this.collection.doc(id);
+    const doc = await docRef.get();
 
-    if (users.length === filteredUsers.length) {
+    if (!doc.exists) {
       throw new Error('Usuário não encontrado');
     }
 
-    await this.saveUsers(filteredUsers);
+    await docRef.delete();
     return true;
   }
 
-  // Listar todos os usuários (sem senhas)
   async findAll(filters = {}) {
-    const users = await this.readUsers();
-    let filteredUsers = users;
+    let query = this.collection;
 
-    // Aplicar filtros
     if (filters.userType) {
-      filteredUsers = filteredUsers.filter(user => user.userType === filters.userType);
+      query = query.where('userType', '==', filters.userType);
     }
 
-    if (filters.verified !== undefined) {
-      filteredUsers = filteredUsers.filter(user => user.verified === filters.verified);
+    if (typeof filters.verified === 'boolean') {
+      query = query.where('verified', '==', filters.verified);
     }
 
-    // Remover senhas
-    return filteredUsers.map(({ password, ...user }) => user);
+    const snapshot = await query.get();
+
+    return snapshot.docs
+      .map(doc => this.formatUser(doc))
+      .filter(Boolean);
   }
 
-  // Verificar senha (comparação direta - NÃO SEGURO!)
   async verifyPassword(plainPassword, storedPassword) {
-    // return bcrypt.compare(plainPassword, hashedPassword);
-    return plainPassword === storedPassword; // Comparação direta de texto
+    return plainPassword === storedPassword;
   }
 }
 

@@ -29,7 +29,7 @@ exports.validateRegister = [
     .trim()
     .notEmpty().withMessage('Email é obrigatório')
     .isEmail().withMessage('Email inválido')
-    .normalizeEmail(),
+,
   
   body('password')
     .notEmpty().withMessage('Senha é obrigatória')
@@ -70,7 +70,7 @@ exports.validateLogin = [
     .trim()
     .notEmpty().withMessage('Email é obrigatório')
     .isEmail().withMessage('Email inválido')
-    .normalizeEmail(),
+,
   
   body('password')
     .notEmpty().withMessage('Senha é obrigatória'),

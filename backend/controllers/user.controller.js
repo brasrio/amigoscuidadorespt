@@ -35,6 +35,9 @@ exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
     const updateData = req.body;
 
+    console.log('📥 [Backend] Recebendo atualização de perfil para usuário:', userId);
+    console.log('📋 [Backend] Dados recebidos:', JSON.stringify(updateData, null, 2));
+
     // Remover campos que não devem ser atualizados diretamente
     delete updateData.id;
     delete updateData.email; // Email não pode ser alterado por enquanto
@@ -42,8 +45,13 @@ exports.updateProfile = async (req, res) => {
     delete updateData.createdAt;
     delete updateData.verified;
 
+    console.log('📝 [Backend] Dados após limpeza:', JSON.stringify(updateData, null, 2));
+
     // Atualizar usuário
     const updatedUser = await User.update(userId, updateData);
+
+    console.log('✅ [Backend] Usuário atualizado com sucesso');
+    console.log('📤 [Backend] Dados atualizados:', JSON.stringify(updatedUser, null, 2));
 
     res.json({
       success: true,
@@ -51,7 +59,7 @@ exports.updateProfile = async (req, res) => {
       data: updatedUser
     });
   } catch (error) {
-    console.error('Erro ao atualizar perfil:', error);
+    console.error('❌ [Backend] Erro ao atualizar perfil:', error);
     res.status(400).json({
       success: false,
       message: error.message || 'Erro ao atualizar perfil'

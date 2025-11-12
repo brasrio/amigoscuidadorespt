@@ -227,6 +227,259 @@ class AmigosAPI {
             return { success: false, message: 'Erro ao excluir usuário' };
         }
     }
+
+    // ========== WALLET & TRANSACTIONS ==========
+
+    // Obter carteira do usuário
+    async getWallet() {
+        try {
+            const response = await fetch(`${API_URL}/wallet/my-wallet`, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao obter carteira' };
+        }
+    }
+
+    // Obter transações do usuário
+    async getTransactions(filters = {}) {
+        try {
+            const queryParams = new URLSearchParams(filters).toString();
+            const url = `${API_URL}/wallet/my-transactions${queryParams ? '?' + queryParams : ''}`;
+
+            const response = await fetch(url, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao obter transações' };
+        }
+    }
+
+    // Obter estatísticas da carteira
+    async getWalletStatistics() {
+        try {
+            const response = await fetch(`${API_URL}/wallet/my-statistics`, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao obter estatísticas' };
+        }
+    }
+
+    // Criar transação (simulação)
+    async createTransaction(transactionData) {
+        try {
+            const response = await fetch(`${API_URL}/wallet/transactions`, {
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify(transactionData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao criar transação' };
+        }
+    }
+
+    // Processar pagamento
+    async processPayment(transactionId) {
+        try {
+            const response = await fetch(`${API_URL}/wallet/transactions/${transactionId}/process`, {
+                method: 'POST',
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao processar pagamento' };
+        }
+    }
+
+    // Solicitar saque
+    async requestWithdrawal(amount) {
+        try {
+            const response = await fetch(`${API_URL}/wallet/withdrawal`, {
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ amount })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao solicitar saque' };
+        }
+    }
+
+    // Admin: Obter todas as transações
+    async adminGetAllTransactions(filters = {}) {
+        try {
+            const queryParams = new URLSearchParams(filters).toString();
+            const url = `${API_URL}/wallet/admin/transactions${queryParams ? '?' + queryParams : ''}`;
+
+            const response = await fetch(url, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao obter transações' };
+        }
+    }
+
+    // Admin: Obter histórico mensal
+    async adminGetMonthlyHistory(months = 12) {
+        try {
+            const response = await fetch(`${API_URL}/wallet/admin/monthly-history?months=${months}`, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao obter histórico' };
+        }
+    }
+
+    // Admin: Processar saque
+    async adminProcessWithdrawal(transactionId, action, notes = '') {
+        try {
+            const response = await fetch(`${API_URL}/wallet/admin/withdrawals/${transactionId}/process`, {
+                method: 'POST',
+                headers: this.getHeaders(),
+                body: JSON.stringify({ action, notes })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, data: data.data };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao processar saque' };
+        }
+    }
+
+    // Recuperação de senha
+    async forgotPassword(email) {
+        try {
+            const response = await fetch(`${API_URL}/password/forgot`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao solicitar recuperação de senha' };
+        }
+    }
+
+    async resetPassword(email, code, newPassword) {
+        try {
+            const response = await fetch(`${API_URL}/password/reset`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, code, newPassword })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao redefinir senha' };
+        }
+    }
+
+    async verifyResetCode(email, code) {
+        try {
+            const response = await fetch(`${API_URL}/password/verify-code`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, code })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message };
+            }
+
+            return { success: false, message: data.message };
+        } catch (error) {
+            return { success: false, message: 'Erro ao verificar código' };
+        }
+    }
 }
 
 // Instância global da API

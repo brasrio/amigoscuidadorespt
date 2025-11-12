@@ -1,6 +1,6 @@
 # Backend Amigos Cuidadores
 
-Backend em Node.js para a plataforma Amigos Cuidadores, com sistema de autenticação JWT e armazenamento local em JSON.
+Backend em Node.js para a plataforma Amigos Cuidadores, com autenticação JWT e armazenamento de usuários no **Firebase Firestore** (avatars em Base64).
 
 ## 🚀 Instalação
 
@@ -15,8 +15,8 @@ npm install
 ```
 
 3. Configure as variáveis de ambiente:
-   - Crie um arquivo `.env` na raiz do backend
-   - Copie o conteúdo abaixo:
+   - Renomeie `config.env` ou crie um arquivo com os valores abaixo.
+   - Guarde o JSON da conta de serviço do Firebase em `backend/config/firebase-service-account.json` (ou defina o caminho com `FIREBASE_SERVICE_ACCOUNT_PATH`).
 
 ```env
 # Configurações do servidor
@@ -30,6 +30,20 @@ JWT_EXPIRE=7d
 
 # Ambiente
 NODE_ENV=development
+
+# Firebase
+FIREBASE_SERVICE_ACCOUNT_PATH=./config/firebase-service-account.json
+# ou defina FIREBASE_SERVICE_ACCOUNT_JSON com o conteúdo do arquivo em formato string
+# Opcional: sobrepõe o project_id do arquivo de serviço
+# FIREBASE_PROJECT_ID=seu-project-id
+
+# Email SMTP (para notificações)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=amigoscuidadorespt@gmail.com
+SMTP_PASS=sylunwdeulydjjiv
+SMTP_SECURE=false
+EMAIL_FROM="Amigos Cuidadores <amigoscuidadorespt@gmail.com>"
 ```
 
 ## 🏃‍♂️ Executar o servidor
@@ -148,14 +162,14 @@ Authorization: Bearer <token>
 
 ## 📁 Estrutura de dados
 
-Os usuários são salvos em `backend/data/users.json` com a seguinte estrutura:
+Os usuários são salvos na coleção `users` do Firestore com a seguinte estrutura:
 
 ```json
 {
   "id": "uuid",
   "name": "Nome do Usuário",
   "email": "email@exemplo.com",
-  "password": "hash_bcrypt",
+  "password": "senha_em_texto", // ❗️ Apenas ambiente de desenvolvimento (ajuste para usar hash)
   "userType": "client|caregiver|nurse",
   "phone": "912345678",
   "address": {
@@ -164,6 +178,7 @@ Os usuários são salvos em `backend/data/users.json` com a seguinte estrutura:
     "state": "Estado",
     "zipCode": "0000-000"
   },
+  "avatar": "data:image/png;base64,...", // opcional
   "profileComplete": false,
   "verified": false,
   "createdAt": "2025-01-01T00:00:00.000Z",
@@ -181,27 +196,11 @@ Os usuários são salvos em `backend/data/users.json` com a seguinte estrutura:
 }
 ```
 
-## 🔐 Segurança
+## 🔐 Segurança & Notas
 
-- Senhas são criptografadas com bcrypt (10 salt rounds)
-- Autenticação via JWT tokens
-- Tokens expiram em 7 dias (configurável)
-- Validação de dados com express-validator
-
-## 🛠️ Tecnologias utilizadas
-
-- **Express.js** - Framework web
-- **bcryptjs** - Criptografia de senhas
-- **jsonwebtoken** - Autenticação JWT
-- **cors** - Habilitar CORS
-- **dotenv** - Variáveis de ambiente
-- **express-validator** - Validação de dados
-- **uuid** - Geração de IDs únicos
-- **nodemon** - Auto-reload em desenvolvimento
-
-## 📝 Notas
-
-- Este é um backend simples com armazenamento em JSON, adequado para desenvolvimento e testes
-- Para produção, considere usar um banco de dados real (PostgreSQL, MongoDB, etc.)
-- Adicione mais validações e tratamento de erros conforme necessário
-- Implemente rate limiting e outras medidas de segurança para produção
+- **Senhas:** ainda não estão criptografadas; ajuste `User.create` e `User.verifyPassword` para usar hash em produção.
+- **Autenticação:** JWT (7 dias) + validações com `express-validator`.
+- **Uploads:** avatares são enviados via Base64, limitados a ~1MB no frontend e validados (3MB máx.) no backend.
+- **Email:** o envio usa SMTP (Gmail). Configure variável de ambiente com usuário/senha de app. Falhas ao enviar são apenas registradas em log.
+- **Credenciais:** não versionar o `firebase-service-account.json` (já incluso no `.gitignore`).
+- **Migrações futuras:** considere usar Firebase Storage para arquivos grandes ou mover senhas para `bcrypt`.

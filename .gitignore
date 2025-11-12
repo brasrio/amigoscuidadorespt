@@ -1,0 +1,13 @@
+# Dependências
+node_modules/
+
+# Credenciais privadas
+backend/config/firebase-service-account.json
+backend/config/firebase-service-account*.json
+
+# Arquivos de ambiente locais
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+

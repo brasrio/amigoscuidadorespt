@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const config = require('../config/config');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 // Gerar token JWT
 const generateToken = (userId) => {
@@ -29,6 +30,15 @@ exports.register = async (req, res) => {
 
     // Gerar token
     const token = generateToken(newUser.id);
+
+    // Enviar email de boas-vindas (não bloqueante)
+    sendWelcomeEmail({
+      name: newUser.name,
+      email: newUser.email,
+      userType: newUser.userType
+    }).catch(error => {
+      console.error('Erro ao enviar email de boas-vindas:', error);
+    });
 
     res.status(201).json({
       success: true,
