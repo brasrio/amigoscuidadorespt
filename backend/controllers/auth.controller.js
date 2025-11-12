@@ -31,23 +31,25 @@ exports.register = async (req, res) => {
     // Gerar token
     const token = generateToken(newUser.id);
 
-    // Enviar email de boas-vindas (não bloqueante)
+    // Enviar email de boas-vindas (aguardar para garantir execução em serverless)
     console.log('[Register] Tentando enviar email de boas-vindas...');
-    sendWelcomeEmail({
-      name: newUser.name,
-      email: newUser.email,
-      userType: newUser.userType
-    })
-    .then(() => {
+    try {
+      const info = await sendWelcomeEmail({
+        name: newUser.name,
+        email: newUser.email,
+        userType: newUser.userType
+      });
       console.log('[Register] ✅ Email de boas-vindas enviado com sucesso!');
-    })
-    .catch(error => {
+      if (info?.messageId) {
+        console.log('[Register] Message ID:', info.messageId);
+      }
+    } catch (error) {
       console.error('[Register] ❌ ERRO COMPLETO ao enviar email de boas-vindas:');
       console.error('[Register] Mensagem:', error.message);
       console.error('[Register] Stack:', error.stack);
       console.error('[Register] Código:', error.code);
       console.error('[Register] Response:', error.response);
-    });
+    }
 
     res.status(201).json({
       success: true,
