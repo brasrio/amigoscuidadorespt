@@ -32,12 +32,21 @@ exports.register = async (req, res) => {
     const token = generateToken(newUser.id);
 
     // Enviar email de boas-vindas (não bloqueante)
+    console.log('[Register] Tentando enviar email de boas-vindas...');
     sendWelcomeEmail({
       name: newUser.name,
       email: newUser.email,
       userType: newUser.userType
-    }).catch(error => {
-      console.error('Erro ao enviar email de boas-vindas:', error);
+    })
+    .then(() => {
+      console.log('[Register] ✅ Email de boas-vindas enviado com sucesso!');
+    })
+    .catch(error => {
+      console.error('[Register] ❌ ERRO COMPLETO ao enviar email de boas-vindas:');
+      console.error('[Register] Mensagem:', error.message);
+      console.error('[Register] Stack:', error.stack);
+      console.error('[Register] Código:', error.code);
+      console.error('[Register] Response:', error.response);
     });
 
     res.status(201).json({

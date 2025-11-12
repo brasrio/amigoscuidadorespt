@@ -50,12 +50,20 @@ async function sendMail(options) {
   console.log('[EmailService] Assunto:', options.subject);
 
   try {
+    console.log('[EmailService] Iniciando envio...');
     const info = await mailer.sendMail(message);
     console.log('[EmailService] ✅ Email enviado com sucesso!');
     console.log('[EmailService] Message ID:', info.messageId);
+    console.log('[EmailService] Response:', info.response);
     return info;
   } catch (error) {
-    console.error('[EmailService] ❌ Erro ao enviar email:', error.message);
+    console.error('[EmailService] ❌ ERRO AO ENVIAR EMAIL:');
+    console.error('[EmailService] Mensagem:', error.message);
+    console.error('[EmailService] Código:', error.code);
+    console.error('[EmailService] Command:', error.command);
+    console.error('[EmailService] Response:', error.response);
+    console.error('[EmailService] ResponseCode:', error.responseCode);
+    console.error('[EmailService] Stack completo:', error.stack);
     throw error;
   }
 }
