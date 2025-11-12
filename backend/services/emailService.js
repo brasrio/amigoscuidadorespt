@@ -24,13 +24,16 @@ function getTransporter() {
     host: config.email.host,
     port: config.email.port,
     secure: config.email.secure,
+    requireTLS: true, // Força STARTTLS na porta 587
     auth: {
       user: config.email.user,
       pass: config.email.pass
     },
     connectionTimeout: 10000, // 10 segundos
     greetingTimeout: 10000,
-    socketTimeout: 10000
+    socketTimeout: 10000,
+    logger: true, // logs detalhados
+    debug: process.env.NODE_ENV === 'development' // debug em dev
   });
 
   console.log('[EmailService] Transporte de email configurado com sucesso!');
