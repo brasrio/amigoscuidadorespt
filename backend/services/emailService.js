@@ -18,6 +18,7 @@ function getTransporter() {
   console.log('[EmailService] Host:', config.email.host);
   console.log('[EmailService] Port:', config.email.port);
   console.log('[EmailService] User:', config.email.user);
+  console.log('[EmailService] Pass disponível?:', config.email.pass ? 'SIM (***' + config.email.pass.slice(-4) + ')' : 'NÃO - FALTANDO!');
 
   transporter = nodemailer.createTransport({
     host: config.email.host,
@@ -26,7 +27,10 @@ function getTransporter() {
     auth: {
       user: config.email.user,
       pass: config.email.pass
-    }
+    },
+    connectionTimeout: 10000, // 10 segundos
+    greetingTimeout: 10000,
+    socketTimeout: 10000
   });
 
   console.log('[EmailService] Transporte de email configurado com sucesso!');
@@ -51,7 +55,15 @@ async function sendMail(options) {
 
   try {
     console.log('[EmailService] Iniciando envio...');
-    const info = await mailer.sendMail(message);
+    console.log('[EmailService] Tentando conectar ao servidor SMTP...');
+    
+    const info = await Promise.race([
+      mailer.sendMail(message),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('TIMEOUT: Email demorou mais de 15 segundos')), 15000)
+      )
+    ]);
+    
     console.log('[EmailService] ✅ Email enviado com sucesso!');
     console.log('[EmailService] Message ID:', info.messageId);
     console.log('[EmailService] Response:', info.response);
