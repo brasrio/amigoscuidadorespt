@@ -1703,7 +1703,7 @@ async function loadDocumentsPage() {
 async function renderDocuments() {
     try {
         // Buscar documentos da API
-        const response = await fetch('http://localhost:5000/api/documents', {
+        const response = await fetch(`${API_URL}/documents`, {
             headers: api.getHeaders()
         });
         
@@ -1898,7 +1898,7 @@ async function uploadDocument(type) {
 // Salvar documento
 async function saveDocument(type, newDoc) {
     try {
-        const response = await fetch('http://localhost:5000/api/documents', {
+        const response = await fetch(`${API_URL}/documents`, {
             method: 'POST',
             headers: api.getHeaders(),
             body: JSON.stringify({
@@ -1926,7 +1926,7 @@ async function saveDocument(type, newDoc) {
 // Ver documento
 async function viewDocument(documentId) {
     try {
-        const response = await fetch(`http://localhost:5000/api/documents/${documentId}`, {
+        const response = await fetch(`${API_URL}/documents/${documentId}`, {
             headers: api.getHeaders()
         });
 
@@ -1959,7 +1959,7 @@ async function deleteDocument(documentId) {
     }
 
     try {
-        const response = await fetch(`http://localhost:5000/api/documents/${documentId}`, {
+        const response = await fetch(`${API_URL}/documents/${documentId}`, {
             method: 'DELETE',
             headers: api.getHeaders()
         });

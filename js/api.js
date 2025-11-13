@@ -4,6 +4,10 @@ const API_URL = (window.location.hostname === 'localhost' || window.location.hos
     ? 'http://localhost:5000/api'
     : '/api';
 
+if (typeof window !== 'undefined') {
+    window.API_URL = API_URL;
+}
+
 // Classe para gerenciar chamadas à API
 class AmigosAPI {
     constructor() {

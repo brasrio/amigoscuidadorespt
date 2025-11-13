@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     messageContainer.innerHTML = '';
     
     try {
-      const response = await fetch('http://localhost:5000/api/password/reset', {
+      const response = await fetch(`${API_URL}/password/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
