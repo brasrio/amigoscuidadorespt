@@ -128,6 +128,28 @@ class AmigosAPI {
         }
     }
 
+    // Listar todos os usuários (Admin)
+    async findAll() {
+        try {
+            const response = await fetch(`${API_URL}/users`, {
+                headers: this.getHeaders()
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return data.data || [];
+            }
+
+            const error = new Error(data.message || 'Erro ao listar usuários');
+            error.details = data.errors;
+            throw error;
+        } catch (error) {
+            console.error('API findAll error:', error);
+            throw error;
+        }
+    }
+
     // Atualizar perfil
     async updateProfile(updateData) {
         try {

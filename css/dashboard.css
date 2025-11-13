@@ -1692,18 +1692,18 @@ body[data-user-type="admin"] .admin-only {
 .whatsapp-float {
     position: fixed;
     bottom: 30px;
-    right: 30px;
+    left: 24px;
     z-index: 999;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 12px;
 }
 
 .whatsapp-float-button {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
     background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
     border-radius: 50%;
     display: flex;
@@ -1723,6 +1723,11 @@ body[data-user-type="admin"] .admin-only {
 
 .whatsapp-float-button:active {
     transform: scale(0.95);
+}
+
+.whatsapp-float-button svg {
+    width: 24px;
+    height: 24px;
 }
 
 /* Animação de pulso */
@@ -1874,17 +1879,17 @@ body[data-user-type="admin"] .admin-only {
     /* WhatsApp Float - Responsivo Mobile */
     .whatsapp-float {
         bottom: 20px;
-        right: 20px;
+        left: 16px;
     }
 
     .whatsapp-float-button {
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
     }
 
     .whatsapp-float-button svg {
-        width: 26px;
-        height: 26px;
+        width: 22px;
+        height: 22px;
     }
 
     .whatsapp-tooltip {
