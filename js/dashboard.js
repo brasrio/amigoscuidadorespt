@@ -2528,26 +2528,6 @@ function formatValidationErrors(result) {
     return result?.message || null;
 }
 
-// Adicionar método findAll à API
-api.findAll = async function() {
-    try {
-        const response = await fetch('http://localhost:5000/api/users', {
-            headers: this.getHeaders()
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            return data.data || [];
-        }
-        
-        return [];
-    } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
-        return [];
-    }
-};
-
 // Exportar funções globais
 window.loadPage = loadPage;
 window.viewProfessional = viewProfessional;
