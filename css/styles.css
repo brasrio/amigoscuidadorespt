@@ -651,6 +651,14 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.service-features li .icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    opacity: 0.6;
+    stroke: var(--primary);
+}
+
 .feature-dot {
     width: 0.375rem;
     height: 0.375rem;
